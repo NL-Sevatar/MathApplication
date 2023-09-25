@@ -28,3 +28,5 @@ c:\Dev\ConsoleProjectUno\obj\Debug\net7.0\refint\Dev.dll
 c:\Dev\ConsoleProjectUno\obj\Debug\net7.0\Dev.pdb
 c:\Dev\ConsoleProjectUno\obj\Debug\net7.0\Dev.genruntimeconfig.cache
 c:\Dev\ConsoleProjectUno\obj\Debug\net7.0\ref\Dev.dll
+C:\Dev\ConsoleProjectUno\bin\Debug\net7.0\currencyapi.dll
+C:\Dev\ConsoleProjectUno\obj\Debug\net7.0\Dev.csproj.CopyComplete

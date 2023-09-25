@@ -1,4 +1,9 @@
-﻿using System.Xml.XPath;
+﻿using System.Dynamic;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Xml.XPath;
+using currencyapi;
+using Microsoft.VisualBasic;
 
 namespace MathApplication
 {
@@ -49,12 +54,14 @@ namespace MathApplication
                         
                          case "3":
                             GetCurrency();
+                            Main();
                             break; 
                         case "4":
                             Console.WriteLine("Thank you for visting.");
                             break;    
                         default:
                             Console.WriteLine("Invalid option, please try using the numbers.");
+                            Main();
                             break; 
                         }
         }
@@ -65,7 +72,7 @@ namespace MathApplication
 
             Console.WriteLine("Please enter your operator or q to quit: ");
             char op =  Convert.ToChar(Console.ReadLine()!);
-            if (op == 'q'){
+            if (op == 'q'){ // Does not exit the loop still asking the the second #
                 Main();
             }
                 
@@ -81,7 +88,7 @@ namespace MathApplication
                 case '/':
                     if (num2 != 0)
                     {
-                        return num1 / num2;
+                        return num1 / num2; 
                     }
                     else
                     {
@@ -143,7 +150,7 @@ namespace MathApplication
 
             double converter = Convert.ToDouble(Console.ReadLine());
 
-            Console.Write("Now please enter your base tempature: ");
+            Console.Write("Now please enter your base temperature: ");
             double baseTemp = Convert.ToDouble(Console.ReadLine());
             double outTemp = 0;
             string tempType = " ";
@@ -186,9 +193,43 @@ namespace MathApplication
 
     } 
 
+    public class CurrencyData
+    {
+        public string code { get; set; }
+        public double value { get; set; }
+    }
+
+    public class RootObject
+    {
+        public Dictionary<string, CurrencyData> data { get; set; }
+    }
+
     static void GetCurrency()
     {
+        var fx = new Currencyapi("cur_live_95Lo7FrezklMKNzkPlOY4Gwc8ISMO6FFnPnXpksr");
 
+        Console.WriteLine("Please enter your base currency 3 letter code.");
+        string baseInput = Console.ReadLine()!;  
+        string baseCurrency = baseInput.ToUpper();
+
+        Console.WriteLine("Please enter the amount in the selected currency.");
+        double value = Convert.ToDouble(Console.ReadLine()!);
+
+        Console.WriteLine("What are we currency 3 letter code are we converting too?");
+        string conversionInput = Console.ReadLine()!;
+        string currencies = conversionInput.ToUpper();
+
+        // Console.WriteLine(fx.Latest(baseCurrency, currencies));
+
+        string jsonResponse = fx.Latest(baseCurrency, currencies);
+
+        var data = JsonSerializer.Deserialize<RootObject>(jsonResponse);
+
+        double conversionRate = data.data[baseCurrency].value;
+
+        double conversionResult = value * conversionRate;
+
+        Console.WriteLine(conversionResult); 
     }
 
 

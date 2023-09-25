@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "YSArwrXMcoIuB9irsDgji25X1j8CYG97r73xSeA+ekxAzfm8QdKT5s6i2kW/PEBtv2ObGeJcJNeC5KcFggeb1w==",
+  "dgSpecHash": "AcGpKC6g+H4+hhWPcgF+hF47KCKUAEBk9knhKE30eiq5zNdTFnnYO5Sap9EGW1GqDCmy6UeFpvmUtH2ptP6tJQ==",
   "success": true,
   "projectFilePath": "C:\\Dev\\ConsoleProjectUno\\Dev.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Justi\\.nuget\\packages\\currencyapi\\1.0.2\\currencyapi.1.0.2.nupkg.sha512"
+  ],
   "logs": []
 }
