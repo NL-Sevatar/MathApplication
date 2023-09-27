@@ -5,6 +5,7 @@ using System.Xml.XPath;
 using currencyapi;
 using Microsoft.VisualBasic;
 
+
 namespace MathApplication
 {
     class Program
@@ -14,7 +15,7 @@ namespace MathApplication
             bool contuineCalculation = true;
             bool firstTime = true;
             double result =0;
-            string tempResult = " ";
+            string tempResult;
            
                 Console.WriteLine("Welcome to the Math Center");
                 
@@ -175,7 +176,7 @@ namespace MathApplication
 
                 case 4:
                     outTemp = (baseTemp - 32) * 5/9 + 273.15;
-                    tempType = "Kelvin";
+                     tempType = "Kelvin";
                     break;
 
                 case 5:
@@ -193,15 +194,19 @@ namespace MathApplication
 
     } 
 
-    public class CurrencyData
+    public class Meta
     {
-        public string code { get; set; }
-        public double value { get; set; }
-    }
 
-    public class RootObject
+    }
+     public class UpdateDateTime
     {
-        public Dictionary<string, CurrencyData> data { get; set; }
+        public DateTimeOffset last_updated_at {get;set;}
+    }
+    public class SelectedCurrency
+    {
+        public string? Currency {get;set;}
+        public string? Code {get;set;}
+        public double Value {get;set;}
     }
 
     static void GetCurrency()
@@ -213,28 +218,30 @@ namespace MathApplication
         string baseCurrency = baseInput.ToUpper();
 
         Console.WriteLine("Please enter the amount in the selected currency.");
-        double value = Convert.ToDouble(Console.ReadLine()!);
+        double currencyAmount = Convert.ToDouble(Console.ReadLine()!);
 
         Console.WriteLine("What are we currency 3 letter code are we converting too?");
         string conversionInput = Console.ReadLine()!;
-        string currencies = conversionInput.ToUpper();
+        string targetCurrency = conversionInput.ToUpper(); 
 
-        // Console.WriteLine(fx.Latest(baseCurrency, currencies));
+        string jsonResponse = fx.Latest(baseCurrency, targetCurrency)!;
 
-        string jsonResponse = fx.Latest(baseCurrency, currencies);
+        SelectedCurrency? selectedCurrency = JsonSerializer.Deserialize<SelectedCurrency>(jsonResponse);
 
-        var data = JsonSerializer.Deserialize<RootObject>(jsonResponse);
+        Console.WriteLine(jsonResponse);
 
-        double conversionRate = data.data[baseCurrency].value;
+        if (selectedCurrency != null)
+        {
+            Console.WriteLine($"Currency Code: {selectedCurrency.Code}");
+            Console.WriteLine($"Currency Value: {selectedCurrency.Value}");
 
-        double conversionResult = value * conversionRate;
-
-        Console.WriteLine(conversionResult); 
-    }
-
-
-
-        
-}
-
-} 
+            double conversionResult = currencyAmount * selectedCurrency.Value;
+            Console.WriteLine($"Converted Result: {conversionResult} {selectedCurrency.Code}");
+        }
+        else
+        {
+            Console.WriteLine("Failed to deserialize JSON data.");
+        }
+    } 
+    }    
+  }
