@@ -1,9 +1,11 @@
 ﻿using System.Dynamic;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Xml.XPath;
 using currencyapi;
 using Microsoft.VisualBasic;
+using System.Security.Permissions;
+using Newtonsoft.Json;
+using System.Net;
 
 
 namespace MathApplication
@@ -194,21 +196,25 @@ namespace MathApplication
 
     } 
 
-    public class Meta
-    {
-
-    }
+    public class Meta{}
+    
      public class UpdateDateTime
     {
         public DateTimeOffset last_updated_at {get;set;}
     }
-    public class SelectedCurrency
+
+    public class CurrencyResponse
     {
-        public string? Currency {get;set;}
+        public Dictionary<string, CurrencyData>? data {get;set;}
+        public Meta? meta {get;set;}
+    }
+    public class CurrencyData
+    {
+        [JsonProperty("code")]
         public string? Code {get;set;}
+        [JsonProperty("value")]
         public double Value {get;set;}
     }
-
     static void GetCurrency()
     {
         var fx = new Currencyapi("cur_live_95Lo7FrezklMKNzkPlOY4Gwc8ISMO6FFnPnXpksr");
@@ -222,22 +228,26 @@ namespace MathApplication
 
         Console.WriteLine("What are we currency 3 letter code are we converting too?");
         string conversionInput = Console.ReadLine()!;
-        string targetCurrency = conversionInput.ToUpper(); 
+        string targetCurrency = conversionInput.ToUpper();
+        
 
         string jsonResponse = fx.Latest(baseCurrency, targetCurrency)!;
 
-        SelectedCurrency? selectedCurrency = JsonSerializer.Deserialize<SelectedCurrency>(jsonResponse);
+        var root = JsonConvert.DeserializeObject<CurrencyResponse>(jsonResponse);
 
-        Console.WriteLine(jsonResponse);
 
-        if (selectedCurrency != null)
+        Console.WriteLine(jsonResponse);    
+
+        if (root!.data!.ContainsKey(targetCurrency))
         {
-            Console.WriteLine($"Currency Code: {selectedCurrency.Code}");
-            Console.WriteLine($"Currency Value: {selectedCurrency.Value}");
+            CurrencyData currencyData = root.data[targetCurrency];
+            Console.WriteLine($"Currency Code: {currencyData.Code}");
+            Console.WriteLine($"Currency Value: {currencyData.Value}");
 
-            double conversionResult = currencyAmount * selectedCurrency.Value;
-            Console.WriteLine($"Converted Result: {conversionResult} {selectedCurrency.Code}");
-        }
+            double conversionResult = currencyAmount * currencyData.Value;
+            Console.WriteLine($"Converted Result: {conversionResult} {currencyData.Code}");
+
+        }                    
         else
         {
             Console.WriteLine("Failed to deserialize JSON data.");
