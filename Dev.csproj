@@ -6,9 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Temp.cs.fs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Currencyapi" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
